@@ -20,3 +20,4 @@ CMakeLists.txt.user
 /vqf/vqf.cpython-*.so
 /vqf/basicvqf.cpython-*.so
 *.zip
+*.asv
