@@ -1,7 +1,7 @@
 close all; clear all; clc;
 
-rawDataHuro = readtable("log\Huro_06_23_1413.csv");
-rawDataXsen = readtable("log\XSens_06_23_1413.csv");
+rawDataHuro = readtable("log\mag_biases\Huro_06_29_1533.csv");
+% rawDataXsen = readtable("log\XSens_06_23_1413.csv");
 rawGry = [rawDataHuro.gx, rawDataHuro.gy, rawDataHuro.gz];
 rawAcc = [rawDataHuro.ax, rawDataHuro.ay, rawDataHuro.az];
 rawMag = [rawDataHuro.mx, rawDataHuro.my, rawDataHuro.mz];
@@ -16,7 +16,7 @@ filter_VQF = VQF(gry_ts, acc_ts, mag_ts);
 output = filter_VQF.updateBatch(rawGry, rawAcc, rawMag);
 
 time_huro = acc_ts : acc_ts : acc_ts*length(output.quat6D);
-time_xsen = 0.01 : 0.01 : 0.01*length(rawDataXsen.Time);
+% time_xsen = 0.01 : 0.01 : 0.01*length(rawDataXsen.Time);
 
 magNormDip = NaN([length(output.quat6D), 2]);
 for idx = 1:length(output.quat6D)
@@ -30,8 +30,9 @@ eul9D = quat2Eul(output.quat9D);
 
 plotMagNormDip = figure();
 hold on; grid on;
-xlabel('time_huro (s)'); ylabel('Magnetometer Norm Dip (rad)');
+xlabel('time_huro (s)'); ylabel('Magnetometer Norm Dip (deg)');
 magNormDipPlot = plot(time_huro, magNormDip(:,2).*rad2deg, 'LineWidth', 1);
+
 
 
 plotMagNorm = figure();
@@ -45,9 +46,12 @@ xlabel('time_huro (s)'); ylabel('Euler Angles (degrees)');
 huro_rol = plot(time_huro, rawDataHuro.roll, 'r');
 huro_pit = plot(time_huro, rawDataHuro.pitch, 'g');
 huro_yaw = plot(time_huro, rawDataHuro.yaw, 'b');
-xsen_rol = plot(time_xsen, rawDataXsen.roll, 'r--');
-xsen_pit = plot(time_xsen, rawDataXsen.pitch, 'g--');
-xsen_yaw = plot(time_xsen, rawDataXsen.yaw, 'b--');
+vqf_rol = plot(time_huro, eul9D(:,1), 'r--');
+vqf_pit = plot(time_huro, eul9D(:,2), 'g--');
+vqf_yaw = plot(time_huro, eul9D(:,3), 'b--');
+% xsen_rol = plot(time_xsen, rawDataXsen.roll, 'r--');
+% xsen_pit = plot(time_xsen, rawDataXsen.pitch, 'g--');
+% xsen_yaw = plot(time_xsen, rawDataXsen.yaw, 'b--');
 
 legend([huro_rol, huro_pit, huro_yaw], {'Roll', 'Pitch', 'Yaw'});
 title('Euler Angles from 9D Quaternion');

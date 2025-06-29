@@ -1,5 +1,5 @@
 close all; clear all; clc;
-rawData = readtable("log\Huro_06_23_1544.csv");
+rawData = readtable("log\cal_data\Huro_06_29_1635.csv");
 
 % mc : matrix column
 mc_1 = rawData.mx.^2;
@@ -32,7 +32,7 @@ scale_matrix = sqrt(D)./scale_q;
 
 hard_iron = [new_b(1)/D(1,1), new_b(2)/D(2, 2), new_b(3)/D(3, 3)]./2;
 soft_iron = V*scale_matrix;
-cal_mag_xyz = (soft_iron * (V' * [rawData.mx, rawData.my, rawData.mz]' + hard_iron'))'./scale_matrix(1,1);
+cal_mag_xyz = (soft_iron * (V' * [rawData.mx, rawData.my, rawData.mz]' + hard_iron'))';
 
 
 rawPlot = figure();
