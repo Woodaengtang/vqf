@@ -1,5 +1,5 @@
 close all; clear all; clc;
-rawData = readtable("log\cal_data\Huro_06_30_1547.csv");
+rawData = readtable("log\cal_data\Huro_06_30_1545.csv");
 
 % mc : matrix column
 mc_1 = rawData.mx.^2;
