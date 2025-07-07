@@ -1,6 +1,6 @@
 close all; clear all; clc;
 
-rawDataHuro = readtable("log\mag_biases\Huro_06_29_1533.csv");
+rawDataHuro = readtable("log\Huro_06_30_2331.csv");
 % rawDataXsen = readtable("log\XSens_06_23_1413.csv");
 rawGry = [rawDataHuro.gx, rawDataHuro.gy, rawDataHuro.gz];
 rawAcc = [rawDataHuro.ax, rawDataHuro.ay, rawDataHuro.az];
@@ -28,21 +28,19 @@ end
 eul6D = quat2Eul(output.quat6D);
 eul9D = quat2Eul(output.quat9D);
 
-plotMagNormDip = figure();
-hold on; grid on;
-xlabel('time_huro (s)'); ylabel('Magnetometer Norm Dip (deg)');
-magNormDipPlot = plot(time_huro, magNormDip(:,2).*rad2deg, 'LineWidth', 1);
+% plotMagNormDip = figure();
+% hold on; grid on;
+% xlabel('time_huro (s)'); ylabel('Magnetometer Norm Dip (deg)');
+% magNormDipPlot = plot(time_huro, magNormDip(:,2).*rad2deg, 'LineWidth', 1);
 
-
-
-plotMagNorm = figure();
-hold on; grid on;
-xlabel('time_huro (s)'); ylabel('Norm Dip');
-magNormDipPlot = plot(time_huro, magNormDip(:,1), 'LineWidth', 1);
+% plotMagNorm = figure();
+% hold on; grid on;
+% xlabel('time_huro (s)'); ylabel('Norm Dip');
+% magNormDipPlot = plot(time_huro, magNormDip(:,1), 'LineWidth', 1);
 %%
 plotEul9D = figure();
 hold on; grid on;
-xlabel('time_huro (s)'); ylabel('Euler Angles (degrees)');
+xlabel('time huro (s)'); ylabel('Euler Angles (degrees)');
 huro_rol = plot(time_huro, rawDataHuro.roll, 'r');
 huro_pit = plot(time_huro, rawDataHuro.pitch, 'g');
 huro_yaw = plot(time_huro, rawDataHuro.yaw, 'b');

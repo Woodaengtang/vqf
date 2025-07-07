@@ -1,5 +1,5 @@
 close all; clear all; clc;
-rawData = readtable("log\cal_data\Huro_06_30_1545.csv");
+rawData = readtable("log\cal_data\Huro_07_04_1626.csv");
 
 % mc : matrix column
 mc_1 = rawData.mx.^2;
@@ -46,7 +46,7 @@ fprintf('vqf_real_t soft_iron[%d] = {%s};\n', numel(soft_iron), str_soft_iron);
 
 view_angle = [-30, 20];
 calPlot = figure();
-calPlot.Position = 1.0e+03.*[0.0010    0.0490    1.9200    0.9568];
+% calPlot.Position = 1.0e+03.*[0.0010    0.0490    1.9200    0.9568];
 subplot(2, 4, 1);
 grid on; hold on; 
 scatter3(rawData.mx, rawData.my, rawData.mz, 'Marker', '.');
@@ -78,5 +78,11 @@ xlabel('mx'); ylabel('my'); zlabel('mz');
 subtitle('Calibrated Mag');
 axis equal;
 view(view_angle);
+
+
+plotDiff = figure();
+hold on; grid on;
+% scatter3(cal_mag_xyz(:, 1), cal_mag_xyz(:, 2), cal_mag_xyz(:, 3), 'Marker', '.', 'MarkerEdgeColor', [0.8500 0.3250 0.0980]);
+scatter3(rawData.debug0, rawData.debug1, rawData.debug2, 'Marker', '.');
 
 
