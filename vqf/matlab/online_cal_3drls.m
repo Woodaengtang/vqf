@@ -11,10 +11,13 @@ raw_mz = rawData.mz;
 data_len = length(raw_mx);
 
 N = 9;      % cov matrix and input size
-L = 1000;    % initial data length [L, N]
+L = 2500;    % initial data length [L, N]
 
-P = NaN([L, N]);
-Y = NaN([L, 1]);
+%%%%%%%%%%%%%%%%
+init_L = zeros([N, N]);
+init_R = zeros([N, 1]);
+%%%%%%%%%%%%%%%%
+
 count = 1;
 init_flag = true;
 hard_iron_log = NaN([data_len, 3]);
@@ -38,8 +41,8 @@ for i = 1:data_len
 
     if count > L
         if init_flag
-            est_param = (P'*P) \ (P'*Y);
-            P = eye(N) / (P'*P);
+            est_param = init_L \ init_R;
+            P = eye(N) / init_L;
             init_flag = false;
         end
         e_k = output - input * est_param;
@@ -47,8 +50,8 @@ for i = 1:data_len
         est_param = est_param + P * input' * e_k;
         est_param_log(i, :) = est_param;
     else
-        P(i,:) = input;
-        Y(i) = output;
+        init_R = init_R + input';
+        init_L = init_L + input'*input;
     end
     if ~init_flag
         [hard, soft, v, d] = iron_log(est_param);
@@ -83,7 +86,7 @@ mc_8 = raw_my;
 mc_9 = raw_mz;
 
 % y : output 
-y = -1*ones(height(rawData), 1);
+y = ones(height(rawData), 1);
 
 A = [mc_1 mc_2 mc_3 mc_4 mc_5 mc_6 mc_7 mc_8 mc_9];
 x = (A' * A) \ (A' * y);
@@ -97,7 +100,7 @@ b = [x(7), x(8), x(9)];
 new_b = b * V;
 
 % Scale the matrix to make it a unit sphere
-scale_q = new_b(1)^2/(4*D(1, 1)) + new_b(2)^2/(4*D(2, 2)) + new_b(3)^2/(4*D(3, 3)) - 1;
+scale_q = new_b(1)^2/(4*D(1, 1)) + new_b(2)^2/(4*D(2, 2)) + new_b(3)^2/(4*D(3, 3)) + 1;
 scale_matrix = sqrt(D./scale_q);
 
 hard_iron = [new_b(1)/D(1,1), new_b(2)/D(2, 2), new_b(3)/D(3, 3)]./2;
@@ -219,9 +222,7 @@ function [hard, soft, v, d] = iron_log(est_param)
     new_b = b * V;
     scale_q = 1 + new_b(1)^2/(4*D(1, 1)) + new_b(2)^2/(4*D(2, 2)) + new_b(3)^2/(4*D(3, 3));
     scale_matrix = sqrt(D./scale_q);
-    % if isreal(scale_matrix)
-    %     error("imaginary detected");
-    % end
+    
     hard = [new_b(1)/D(1,1), new_b(2)/D(2, 2), new_b(3)/D(3, 3)]./2;
     soft = V*scale_matrix;
     % soft = [soft_(1, 1), soft_(1, 2), soft_(1, 3),...
