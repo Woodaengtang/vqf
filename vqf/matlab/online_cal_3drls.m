@@ -225,9 +225,6 @@ function [hard, soft, v, d] = iron_log(est_param)
     
     hard = [new_b(1)/D(1,1), new_b(2)/D(2, 2), new_b(3)/D(3, 3)]./2;
     soft = V*scale_matrix;
-    % soft = [soft_(1, 1), soft_(1, 2), soft_(1, 3),...
-    %         soft_(2, 1), soft_(2, 2), soft_(2, 3),...
-    %         soft_(3, 1), soft_(3, 2), soft_(3, 3)];
     v = V;
     d = D;
 end

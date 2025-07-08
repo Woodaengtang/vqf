@@ -1,5 +1,6 @@
 close all; clear all; clc;
-rawData = readtable("log\cal_data\Huro_07_04_1626.csv");
+% rawData = readtable("log\cal_data\Huro_07_04_1626.csv");
+rawData = readtable("log\Huro_07_08_1141.csv");
 
 % mc : matrix column
 mc_1 = rawData.mx.^2;
@@ -13,7 +14,7 @@ mc_8 = rawData.my;
 mc_9 = rawData.mz;
 
 % y : output 
-y = -1*ones(height(rawData), 1);
+y = ones(height(rawData), 1);
 
 A = [mc_1 mc_2 mc_3 mc_4 mc_5 mc_6 mc_7 mc_8 mc_9];
 x = (A' * A) \ (A' * y);
@@ -27,7 +28,7 @@ b = [x(7), x(8), x(9)];
 new_b = b * V;
 
 % Scale the matrix to make it a unit sphere
-scale_q = sqrt(new_b(1)^2/(4*D(1, 1)) + new_b(2)^2/(4*D(2, 2)) + new_b(3)^2/(4*D(3, 3)) - 1);
+scale_q = sqrt(new_b(1)^2/(4*D(1, 1)) + new_b(2)^2/(4*D(2, 2)) + new_b(3)^2/(4*D(3, 3)) + 1);
 scale_matrix = sqrt(D)./scale_q;
 
 hard_iron = [new_b(1)/D(1,1), new_b(2)/D(2, 2), new_b(3)/D(3, 3)]./2;
