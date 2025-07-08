@@ -11,7 +11,7 @@ raw_mz = rawData.mz;
 data_len = length(raw_mx);
 
 N = 9;      % cov matrix and input size
-L = 2500;    % initial data length [L, N]
+L = 1500;    % initial data length [L, N]
 
 %%%%%%%%%%%%%%%%
 init_L = zeros([N, N]);

@@ -1,6 +1,8 @@
 close all; clear all; clc;
 % rawData = readtable("log\cal_data\Huro_07_04_1626.csv");
-rawData = readtable("log\Huro_07_08_1141.csv");
+rawData = readtable("log\Huro_07_08_1439.csv");
+input_format = 'MM.dd HH:mm:ss:SSS';
+rawData.Time = datetime(rawData.Time, 'InputFormat', input_format);
 
 % mc : matrix column
 mc_1 = rawData.mx.^2;
@@ -81,9 +83,16 @@ axis equal;
 view(view_angle);
 
 
+datalength = length(rawData.Time)-1;
+if rem(datalength, 2) == 0
+    h_len = datalength/2;
+else
+    h_len = (datalength-1)/2;
+end
 plotDiff = figure();
 hold on; grid on;
 % scatter3(cal_mag_xyz(:, 1), cal_mag_xyz(:, 2), cal_mag_xyz(:, 3), 'Marker', '.', 'MarkerEdgeColor', [0.8500 0.3250 0.0980]);
+% scatter3(rawData.debug0(h_len:end), rawData.debug1(h_len:end), rawData.debug2(h_len:end), 'Marker', '.');
 scatter3(rawData.debug0, rawData.debug1, rawData.debug2, 'Marker', '.');
 
 
