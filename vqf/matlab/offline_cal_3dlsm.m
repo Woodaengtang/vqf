@@ -1,6 +1,6 @@
 close all; clear all; clc;
 % rawData = readtable("log\cal_data\Huro_07_04_1626.csv");
-rawData = readtable("log\Huro_07_08_1439.csv");
+rawData = readtable("log\Huro_07_08_1455.csv");
 input_format = 'MM.dd HH:mm:ss:SSS';
 rawData.Time = datetime(rawData.Time, 'InputFormat', input_format);
 
@@ -89,10 +89,16 @@ if rem(datalength, 2) == 0
 else
     h_len = (datalength-1)/2;
 end
-plotDiff = figure();
-hold on; grid on;
-% scatter3(cal_mag_xyz(:, 1), cal_mag_xyz(:, 2), cal_mag_xyz(:, 3), 'Marker', '.', 'MarkerEdgeColor', [0.8500 0.3250 0.0980]);
-% scatter3(rawData.debug0(h_len:end), rawData.debug1(h_len:end), rawData.debug2(h_len:end), 'Marker', '.');
-scatter3(rawData.debug0, rawData.debug1, rawData.debug2, 'Marker', '.');
 
+idx = min(find(rawData.roll, 1, 'first'));
+az = 32;
+el = 30;
+plotDiff = figure();
+plotDiff.Position = [488, 132.2, 743.4, 529.8];
+hold on; grid on;
+raw = scatter3(rawData.debug0(1:idx), rawData.debug1(1:idx), rawData.debug2(1:idx), 'Marker', '.');
+cal = scatter3(rawData.debug0(idx+1:end), rawData.debug1(idx+1:end), rawData.debug2(idx+1:end), 'Marker', '.');
+xlabel('mx'); ylabel('my'); zlabel('mz'); legend([raw, cal], {'raw data', 'calibrated data'});
+title('Calibration process validation');
+view([az, el]);
 
