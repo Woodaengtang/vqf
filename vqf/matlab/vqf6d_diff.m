@@ -1,6 +1,5 @@
 close all; clear all; clc;
 readDiff = readtable("log\Diff_06_30_2331.csv");
-
 input_format = 'MM.dd HH:mm:ss:SSS';
 readDiff.Time = datetime(readDiff.Time, 'InputFormat', input_format);
 

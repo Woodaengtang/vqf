@@ -1,6 +1,6 @@
 close all; clear all; clc;
 
-rawData = readtable("log\Huro_06_29_1126.csv");
+rawData = readtable("log\Huro_07_10_1005.csv");
 xsenData = readtable("log\XSens_06_29_1126.csv");
 %%
 time_step = 1/570;
@@ -31,7 +31,7 @@ x_time = linspace(x_time_step, x_data_len*x_time_step, x_data_len);
 rawMagPlot = figure();
 hold on; grid on;
 rawMx = plot(time, rawData.mx, 'LineWidth', 1);
-xsnMx = plot(x_time, xsenData.mx, 'LineWidth', 1);
+% xsnMx = plot(x_time, xsenData.mx, 'LineWidth', 1);
 rawMy = plot(time, rawData.my, 'LineWidth', 1);
 rawMz = plot(time, rawData.mz, 'LineWidth', 1);
 rawMnorm = plot(time, vecnorm([rawData.mx, rawData.my, rawData.mz], 2, 2));

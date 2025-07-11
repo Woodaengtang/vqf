@@ -1,6 +1,7 @@
 close all; clear all; clc;
 % rawData = readtable("log\cal_data\Huro_06_30_1545.csv");
-rawData = readtable("log\cal_data\Huro_07_04_1048.csv");
+% rawData = readtable("log\cal_data\Huro_07_10_1149.csv");
+rawData = readtable("log\Huro_07_11_1337.csv");
 input_format = 'MM.dd HH:mm:ss:SSS';
 rawData.Time = datetime(rawData.Time, 'InputFormat', input_format);
 
@@ -29,7 +30,7 @@ input_log = NaN([data_len, N]);
 cal_mag_xyz = NaN([data_len, 3]);
 est_param_log = NaN([data_len, N]);
 output = 1;    % Fixed output
-scale_factor = 16;
+scale_factor = 40;
 for i = 1:data_len
     mag_norm = norm([raw_mx(i), raw_my(i), raw_mz(i)]);
     raw_mx(i) = raw_mx(i)/scale_factor;
@@ -64,6 +65,7 @@ for i = 1:data_len
     end
     count = count + 1;
 end
+
 calPlot = figure();
 subplot(1, 2, 1);
 hold on; grid on;

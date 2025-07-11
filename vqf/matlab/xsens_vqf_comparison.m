@@ -1,42 +1,71 @@
 close all; clear all; clc;
-slowRawData = readtable("log\comparison\XSens_06_29_1703.csv");
-fastRawData = readtable("log\comparison\XSens_06_29_1704.csv");
+%% Base data
+% diffData = readtable("log\Diff_07_10_1005.csv");
+% diffData = readtable("log\Diff_07_10_1042.csv");
+% diffData = readtable("log\Diff_07_10_1104.csv");
+% diffData = readtable("log\Diff_07_10_1105.csv");
+% diffData = readtable("log\Diff_07_10_1120.csv");
+%% Cali, delta data
+% diffData = readtable("log\Diff_07_10_1150.csv");
+% diffData = readtable("log\Diff_07_10_1315.csv");
+% diffData = readtable("log\Diff_07_10_1326.csv");
+% diffData = readtable("log\Diff_07_10_1335.csv");
+diffData = readtable("log\Diff_07_10_1632.csv");
 
-ts = 1/100;
+input_format = 'MM.dd HH:mm:ss:SSS';
+diffData.Time = datetime(diffData.Time, 'InputFormat', input_format);
 
-slow_vqf = VQF(ts, ts, ts);
-fast_vqf = VQF(ts, ts, ts);
-
-slow_raw_gry = [slowRawData.gx, slowRawData.gy, slowRawData.gz];
-slow_raw_acc = [slowRawData.ax, slowRawData.ay, slowRawData.az];
-slow_raw_mag = [slowRawData.mx, slowRawData.my, slowRawData.mz];
-
-slow_output = slow_vqf.updateBatch(slow_raw_gry, slow_raw_acc, slow_raw_mag);
-time_xsens = ts : ts : ts*length(slowRawData.roll);
-slow_eul = quat2Eul(slow_output.quat6D);
-
-plotSlowRol = figure();
-hold on; grid on;
-% vqf_rol = plot(time_xsens, slow_eul(:,1), "LineWidth",1);
-% xsn_rol = plot(time_xsens, slowRawData.roll, "LineWidth",1);
-% vqf_pit = plot(time_xsens, slow_eul(:,2), "LineWidth",1);
-% xsn_pit = plot(time_xsens, slowRawData.pitch, "LineWidth",1);
-vqf_yaw = plot(time_xsens, slow_eul(:,3), "LineWidth",1);
-xsn_yaw = plot(time_xsens, slowRawData.yaw, "LineWidth",1);
-% legend([vqf_rol, xsn_rol], {"VQF", "Xsens"});
-
-%%
-function eul = quat2Eul(quat)
-% Convert quaternion to Euler angles
-rad2deg = 180 / pi;
-q0 = quat(:, 1);
-q1 = quat(:, 2);
-q2 = quat(:, 3);
-q3 = quat(:, 4);
-
-roll = atan2(2*(q0.*q1 + q2.*q3), 1 - 2*(q1.^2 + q2.^2)) * rad2deg;
-pitch = asin(2*(q0.*q2 - q3.*q1)) * rad2deg;
-yaw = atan2(2*(q0.*q3 + q1.*q2), 1 - 2*(q2.^2 + q3.^2)) * rad2deg;
-
-eul = [roll, pitch, yaw];
+for i = 1:length(diffData.Time)
+    if diffData.Diff_Yaw(i) > 180
+        diffData.Diff_Yaw(i) = diffData.Diff_Yaw(i) - 360;
+    elseif diffData.Diff_Yaw(i) < -180
+        diffData.Diff_Yaw(i) = diffData.Diff_Yaw(i) + 360;
+    end
 end
+
+figParam.angle_lim = 10;
+figParam.line_width = 1.5;
+x_coord = [diffData.Time(1), diffData.Time(end)];
+x_patch = [x_coord(1), x_coord(2), x_coord(2), x_coord(1)];
+y_coord = [-2, 2];
+y_patch = [y_coord(1), y_coord(1), y_coord(2), y_coord(2)];
+
+diffAnglePlot = figure();
+diffAnglePlot.Position = [108.2, 913.8, 862.4, 948.8];
+subplot(3, 1, 1);
+title('Angle difference btw Xsens and Huro');
+hold on; grid on;
+patch(x_patch, y_patch, 'g', 'FaceAlpha', 0.2, 'EdgeColor', 'none');
+plot(diffData.Time, diffData.Diff_Roll, 'LineWidth', figParam.line_width);
+xlim([diffData.Time(1), diffData.Time(end)]); ylim([-figParam.angle_lim, figParam.angle_lim]);
+ylabel('Roll (deg)');
+subplot(3, 1, 2);
+hold on; grid on;
+patch(x_patch, y_patch, 'g', 'FaceAlpha', 0.2, 'EdgeColor', 'none');
+plot(diffData.Time, diffData.Diff_Pitch, 'LineWidth', figParam.line_width);
+xlim([diffData.Time(1), diffData.Time(end)]); ylim([-figParam.angle_lim, figParam.angle_lim]);
+ylabel('Pitch (deg)');
+subplot(3, 1, 3);
+hold on; grid on;
+patch(x_patch, y_patch, 'g', 'FaceAlpha', 0.2, 'EdgeColor', 'none');
+plot(diffData.Time, diffData.Diff_Yaw, 'LineWidth', figParam.line_width);
+xlim([diffData.Time(1), diffData.Time(end)]); 
+% ylim([-figParam.angle_lim, figParam.angle_lim]);
+ylabel('Yaw (deg)');
+
+diffXsensHuro = figure();
+diffXsensHuro.Position = [5.0000, 913.8000, 856.0000, 948.8000];
+subplot(2, 1, 1);
+hold on; grid on;
+patch(x_patch, y_patch, 'g', 'FaceAlpha', 0.2, 'EdgeColor', 'none');
+plot(diffData.Time, diffData.Diff_Yaw, 'LineWidth', figParam.line_width);
+xlim([diffData.Time(1), diffData.Time(end)]); ylabel('Yaw (deg)');
+subplot(2, 1, 2);
+hold on; grid on;
+yaw_huro = plot(diffData.Time, diffData.Huro_Yaw, 'LineWidth', figParam.line_width);
+yaw_xsens = plot(diffData.Time, diffData.XSens_Yaw, 'LineWidth', figParam.line_width);
+legend([yaw_huro, yaw_xsens], {'\psi Huro', '\psi Xsens'}); ylabel('Yaw (deg)');
+
+heading_rmse = rmse(zeros([length(diffData.Diff_Yaw), 1]), diffData.Diff_Yaw);
+disp(heading_rmse);
+
